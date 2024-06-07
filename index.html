@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umbrella Customizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="customizer">
+        <div class="flex-container">
+            <div class="umbrella-container">
+                <img id="umbrella" src="images/Blue_umbrella.png" alt="Umbrella">
+                <img id="logo" src="" alt="Logo">
+                <img id="loader" src="images/loader_icon.svg" alt="Loading" class="hidden">
+            </div>
+            <div class="controls">
+                <h1>Customize Umbrella</h1>
+                <div class="color-options">
+                    <button class="color-swatch" data-color="skyblue" style="background-color: skyblue;"></button>
+                    <button class="color-swatch" data-color="pink" style="background-color: pink;"></button>
+                    <button class="color-swatch" data-color="yellow" style="background-color: yellow;"></button>
+                </div>
+                <h3>Customize Your Umbrella</h3>
+                <p>Upload logo for an instant preview.</p>
+                <p class="upload-info">.png and .jpg files only. Max file size is 5MB</p>
+                <label id="upload-label">
+                    <input type="file" id="logo-upload" accept="image/*">
+                    <div class="label-content">
+                        <img src="images/upload.png" alt="Upload Icon" class="upload-icon">
+                        <span class="upload-text">UPLOAD LOGO</span>
+                        <img src="images/cancel.png" alt="Cancel Icon" class="cancel-icon hidden">
+                    </div>
+                </label>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

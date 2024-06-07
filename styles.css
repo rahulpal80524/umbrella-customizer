@@ -1,0 +1,144 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f0f0f0;
+}
+
+.customizer {
+  text-align: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+.umbrella-container {
+  position: relative;
+  width: 340px;
+  height: 300px;
+}
+
+#umbrella {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s, width 1s, height 1s;
+}
+
+#umbrella.spin {
+  animation: spin 1s infinite linear;
+  width: 60%;
+  height: 60%;
+}
+
+#logo {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translate(-50%, 10%);
+  max-width: 80px;
+  max-height: 80px;
+  display: none;
+}
+
+#loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+}
+
+.hidden {
+  display: none;
+}
+
+.controls {
+  text-align: left;
+  max-width: 500px;
+}
+
+.color-options {
+  margin-top: 20px;
+}
+
+.color-swatch {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  display: none; /* Hide the default file input */
+}
+
+#upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 260px;
+  padding: 10px 20px;
+  margin: 20px 0;
+  border: 2px solid;
+  background-color: skyblue;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  text-align: center;
+}
+
+#upload-label .label-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+}
+
+#upload-label .upload-icon {
+  position: absolute;
+  left: 10px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+#upload-label .upload-text {
+  margin: 0 auto;
+}
+
+#upload-label .cancel-icon {
+  position: absolute;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.spin {
+  animation: spin 1s infinite linear;
+}
+
+.upload-info {
+  font-size: 12px;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
