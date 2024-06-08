@@ -6,11 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const uploadIcon = document.querySelector('.upload-icon');
   const cancelIcon = document.querySelector('.cancel-icon');
   const uploadText = document.querySelector('.upload-text');
+  const loader = document.getElementById('loader');
 
   const umbrellaImages = {
-    blue: 'images/Blue_umbrella.png',
+    skyblue: 'images/Blue_umbrella.png',
     pink: 'images/Pink_umbrella.png',
-    yellow: 'images/Yello_umbrella.png'
+    yellow: 'images/Yellow_umbrella.png'
   };
 
   let uploadTimeout;
@@ -27,17 +28,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  uploadIcon.addEventListener('click', (event) => {
+  // Attach event listeners
+  uploadIcon.addEventListener('click', handleUploadIconClick);
+  logoUpload.addEventListener('click', handleLogoUploadClick);
+  logoUpload.addEventListener('change', handleLogoUploadChange);
+  cancelIcon.addEventListener('click', handleCancelIconClick);
+
+  function handleUploadIconClick(event) {
+    console.log('Upload icon clicked');
     event.stopPropagation(); // Prevent the click event from bubbling up
     logoUpload.click();
-  });
+  }
 
-  logoUpload.addEventListener('click', (event) => {
+  function handleLogoUploadClick(event) {
+    console.log('Logo upload clicked');
     event.stopPropagation(); // Prevent the click event from bubbling up
-  });
+  }
 
-  logoUpload.addEventListener('change', (event) => {
+  function handleLogoUploadChange(event) {
+    console.log('Logo upload changed');
     const file = event.target.files[0];
+    if (!file) {
+      console.log('No file selected');
+      return;
+    }
     if (file.size > 5 * 1024 * 1024) {
       alert('File size must be less than 5MB.');
       resetUploadIcon();
@@ -51,12 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
       logoUpload.value = ''; // Clear the file input value
       return;
     }
-    
+
+    console.log('File accepted, processing...');
     if (file) {
-      umbrella.classList.add('spin');
-      uploadIcon.src = 'images/loader_icon.svg'; // Replace upload icon with loader icon
-      uploadIcon.classList.add('spin'); // Add spin class to the loader icon
-      cancelIcon.classList.remove('hidden'); // Show cancel icon
+      startUploadProcess();
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -70,9 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       reader.readAsDataURL(file);
     }
-  });
+  }
 
-  cancelIcon.addEventListener('click', (event) => {
+  function handleCancelIconClick(event) {
+    console.log('Cancel icon clicked');
     event.stopPropagation(); // Prevent the click event from bubbling up
     clearTimeout(uploadTimeout);
     stopUploadProcess();
@@ -80,16 +93,28 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadText.textContent = 'UPLOAD LOGO'; // Reset the upload text
     cancelIcon.classList.add('hidden'); // Hide the cancel icon
     logoUpload.value = ''; // Clear the file input value
-  });
+  }
+
+  function startUploadProcess() {
+    console.log('Starting upload process');
+    umbrella.classList.add('spin');
+    loader.classList.remove('hidden'); // Show loader
+    uploadIcon.classList.add('hidden'); // Hide upload icon
+    cancelIcon.classList.remove('hidden'); // Show cancel icon
+  }
 
   function stopUploadProcess() {
+    console.log('Stopping upload process');
     umbrella.classList.remove('spin');
-    uploadIcon.src = 'images/upload.png'; // Revert back to upload icon
-    uploadIcon.classList.remove('spin'); // Remove spin class
+    loader.classList.add('hidden'); // Hide loader
+    uploadIcon.classList.remove('hidden'); // Show upload icon
+    cancelIcon.classList.add('hidden'); // Hide cancel icon
   }
 
   function resetUploadIcon() {
-    uploadIcon.src = 'images/upload.png'; // Revert back to upload icon
+    console.log('Resetting upload icon');
+    loader.classList.add('hidden'); // Hide loader
+    uploadIcon.classList.remove('hidden'); // Show upload icon
     uploadIcon.classList.remove('spin'); // Remove spin class
     cancelIcon.classList.add('hidden'); // Hide cancel icon
     uploadText.textContent = 'UPLOAD LOGO'; // Reset the upload text
