@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelIcon = document.querySelector('.cancel-icon');
   const uploadText = document.querySelector('.upload-text');
   const loader = document.getElementById('loader');
+  const uploadLabel = document.getElementById('upload-label');
 
   const umbrellaImages = {
     skyblue: 'images/Blue_umbrella.png',
@@ -15,22 +16,29 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let uploadTimeout;
+  let isUploading = false;
 
   colorSwatches.forEach(swatch => {
     swatch.addEventListener('click', () => {
       const color = swatch.getAttribute('data-color');
+      console.log(`Color swatch clicked: ${color}`);
       umbrella.src = umbrellaImages[color];
-      document.getElementById('upload-label').style.backgroundColor = color;
-      document.getElementById('upload-label').style.borderColor = color;
-      resetUploadIcon();
-      logo.style.display = 'none'; // Hide the logo when the color is changed
-      uploadText.textContent = 'UPLOAD LOGO'; // Reset the upload text when the color is changed
+      uploadLabel.style.backgroundColor = color;
+      uploadLabel.style.borderColor = color;
+
+      // Reset the upload icon only if not uploading
+      if (!isUploading) {
+        resetUploadIcon();
+        logo.style.display = 'none'; // Hide the logo when the color is changed
+        uploadText.textContent = 'UPLOAD LOGO'; // Reset the upload text when the color is changed
+      }
+      console.log('Umbrella color changed and upload icon reset');
     });
   });
 
   // Attach event listeners
   uploadIcon.addEventListener('click', handleUploadIconClick);
-  logoUpload.addEventListener('click', handleLogoUploadClick);
+  uploadLabel.addEventListener('click', handleUploadLabelClick);
   logoUpload.addEventListener('change', handleLogoUploadChange);
   cancelIcon.addEventListener('click', handleCancelIconClick);
 
@@ -38,11 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Upload icon clicked');
     event.stopPropagation(); // Prevent the click event from bubbling up
     logoUpload.click();
+    console.log('Triggered logoUpload click');
   }
 
-  function handleLogoUploadClick(event) {
-    console.log('Logo upload clicked');
-    event.stopPropagation(); // Prevent the click event from bubbling up
+  function handleUploadLabelClick(event) {
+    // Prevent label click event from opening file dialog multiple times
+    if (event.target !== uploadIcon) {
+      console.log('Upload label clicked');
+      logoUpload.click();
+    }
   }
 
   function handleLogoUploadChange(event) {
@@ -67,21 +79,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     console.log('File accepted, processing...');
-    if (file) {
-      startUploadProcess();
+    startUploadProcess();
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        logo.src = e.target.result;
-        // Logo will be shown at the end of the spinning process
-        uploadTimeout = setTimeout(() => {
-          stopUploadProcess();
-          logo.style.display = 'block';
-          uploadText.textContent = file.name.toUpperCase(); // Display the file name in uppercase after spinner stops
-        }, 2000); // 2 seconds delay
-      };
-      reader.readAsDataURL(file);
-    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      logo.src = e.target.result;
+      // Logo will be shown at the end of the spinning process
+      uploadTimeout = setTimeout(() => {
+        stopUploadProcess();
+        logo.style.display = 'block';
+        uploadText.textContent = file.name.toUpperCase(); // Display the file name in uppercase after spinner stops
+        console.log('Upload process completed');
+      }, 2000); // 2 seconds delay
+    };
+    reader.readAsDataURL(file);
   }
 
   function handleCancelIconClick(event) {
@@ -97,26 +108,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function startUploadProcess() {
     console.log('Starting upload process');
+    isUploading = true;
     umbrella.classList.add('spin');
     loader.classList.remove('hidden'); // Show loader
-    uploadIcon.classList.add('hidden'); // Hide upload icon
+    uploadIcon.src = 'images/loader_icon.svg'; // Replace upload icon with loader icon
+    uploadIcon.classList.add('spin'); // Add spin class to loader icon
     cancelIcon.classList.remove('hidden'); // Show cancel icon
   }
 
   function stopUploadProcess() {
     console.log('Stopping upload process');
+    isUploading = false;
     umbrella.classList.remove('spin');
     loader.classList.add('hidden'); // Hide loader
-    uploadIcon.classList.remove('hidden'); // Show upload icon
-    cancelIcon.classList.add('hidden'); // Hide cancel icon
+    setTimeout(() => {
+      uploadIcon.src = 'images/upload.png'; // Revert back to upload icon
+      uploadIcon.classList.remove('spin'); // Remove spin class
+      uploadIcon.classList.remove('hidden'); // Show upload icon
+    }, 100); // Slight delay to ensure the loader hides first
   }
 
   function resetUploadIcon() {
     console.log('Resetting upload icon');
-    loader.classList.add('hidden'); // Hide loader
-    uploadIcon.classList.remove('hidden'); // Show upload icon
-    uploadIcon.classList.remove('spin'); // Remove spin class
-    cancelIcon.classList.add('hidden'); // Hide cancel icon
-    uploadText.textContent = 'UPLOAD LOGO'; // Reset the upload text
+    if (!isUploading) {
+      loader.classList.add('hidden'); // Hide loader
+      uploadIcon.src = 'images/upload.png'; // Revert back to upload icon
+      uploadIcon.classList.remove('hidden'); // Show upload icon
+      uploadIcon.classList.remove('spin'); // Remove spin class
+      cancelIcon.classList.add('hidden'); // Hide cancel icon
+      uploadText.textContent = 'UPLOAD LOGO'; // Reset the upload text
+    }
   }
 });
